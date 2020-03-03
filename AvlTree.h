@@ -48,7 +48,7 @@ public:
         }
     }
 
-    int find(T&& obj) const
+    int find(const T& obj) const
     {
         int foundIndex = 0;
         auto it = m_Root;
@@ -79,7 +79,8 @@ public:
         return splitContainer;
     }
 
-    void insert(T obj)
+    template <typename T1> // Universal reference
+    void insert(T1&& obj)
    {
         m_Root = _insert(m_Root, obj);
    }
@@ -87,8 +88,7 @@ public:
     template <class... Args>
     void emplace(Args...args)
     {
-        T t(args...);
-        insert(t);
+        insert(T(args...));
     }
 
 private:
@@ -114,23 +114,23 @@ private:
     std::shared_ptr<Node> m_Root;
 
     //Null-safe getters
-    int _height(std::shared_ptr<Node> node) const
+    int _height(const std::shared_ptr<const Node>& node) const
     {
         return node == nullptr ? 0 : node->height;
     }
 
-    int _size(std::shared_ptr<Node> node) const
+    int _size(const std::shared_ptr<const Node>& node) const
     {
         return node == nullptr ? 0 : node->size;
     }
 
-    int _getBalance(std::shared_ptr<Node> node) const
+    int _getBalance(const std::shared_ptr<const Node>& node) const
     {
         return node != nullptr ? _height(node->left) - _height(node->right) : 0;
     }
 
     //Tree Operations
-    std::shared_ptr<Node> _insert(std::shared_ptr<Node> node, T& key) {
+    std::shared_ptr<Node> _insert(std::shared_ptr<Node>& node, T& key) {
         if(node == nullptr)
             return Node::make_node(key);
 
